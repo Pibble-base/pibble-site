@@ -102,6 +102,19 @@
     /* Utility: if any element is still too wide, this forces containment */
     .contain-mobile{ max-width: 100% !important; width: 100% !important; overflow: visible; }
   }
+  /* Embed/widget hardening so they don't clip or overflow on iOS */
+  iframe { display:block; max-width:100%; width:100%; box-sizing:border-box; border:0; }
+  .iframe-shell { overflow:hidden; border-radius: 0.75rem; border: 1px solid rgba(0,0,0,.08); }
+  #how .glass { overflow: visible; }
+
+  /* Widen the mobile safeguard a bit beyond small iPhones */
+  @media (max-width: 600px){
+    #how .glass { margin-inline: max(12px, env(safe-area-inset-left)); }
+    /* Keep the How-to grid strictly single column on small devices */
+    #how .grid { grid-template-columns: 1fr !important; }
+    /* Ensure the embed is comfortably tall but not past viewport */
+    #how iframe { height: min(72vh, 560px) !important; }
+  }
 </style>
 </head>
 <body class="bg-white text-slate-900 selection:bg-blue-600 selection:text-white">
@@ -235,11 +248,13 @@
         </div>
         <div class="glass rounded-2xl p-4 md:p-6 shadow-soft">
           <h3 class="font-semibold text-slate-800 mb-3">Use our embedded Uniswap swap</h3>
-          <iframe
-            title="Uniswap Swap"
-            class="w-full sm:h-[640px] h-[520px] rounded-xl border"
-            src="https://app.uniswap.org/swap?outputCurrency=0xcd898058802f5235B8D2bf146f60936456E2C64a&chain=base&use=V2"
-            loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          <div class="iframe-shell rounded-xl">
+            <iframe
+              title="Uniswap Swap"
+              class="w-full sm:h-[640px] h-[520px]"
+              src="https://app.uniswap.org/swap?outputCurrency=0xcd898058802f5235B8D2bf146f60936456E2C64a&chain=base&use=V2"
+              loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          </div>
           <p class="mt-3 text-sm text-slate-600">
             If the tool is not working,
             <a href="https://app.uniswap.org/swap?outputCurrency=0xcd898058802f5235B8D2bf146f60936456E2C64a&chain=base"
