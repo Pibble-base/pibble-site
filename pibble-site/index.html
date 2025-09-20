@@ -2,10 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0b0b0c" />
   <title>PIBBLE — Official Site</title>
   <meta name="description" content="PIBBLE is a fair-launch meme token on Base. 95% LP burned. No owner, no taxes, no blacklist." />
   <link rel="icon" href="pibbclearbg.png" />
+  <!-- Social cards -->
+  <meta property="og:title" content="PIBBLE — Fair-launch on Base" />
+  <meta property="og:description" content="95% LP burned. No owner, no taxes, no blacklist. Contract: 0xcd898058802f5235B8D2bf146f60936456E2C64a" />
+  <meta property="og:image" content="pibbbanner.png" />
+  <meta property="og:url" content="https://pibblecoin.com/" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <!-- Tailwind via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <!-- GSAP + ScrollTrigger -->
@@ -18,10 +26,18 @@
       --p-gray:#F5F6FA;
       --glass: rgba(255,255,255,.08);
       --glassBorder: rgba(255,255,255,.22);
+      /* iOS-safe full viewport */
+      --svh: 100svh;
     }
+    html{scroll-behavior:smooth;}
+    html, body { overflow-x: hidden; }
+    /* Ensure media never protrudes */
+    img, svg, video, canvas{ max-width: 100%; height: auto; display: block; }
+
     .glass{
       background: linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.06));
       backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       border: 1px solid var(--glassBorder);
     }
     .btn{transition: all .2s ease;}
@@ -29,9 +45,10 @@
     .btn-primary:hover{transform: translateY(-1px); box-shadow:0 10px 28px rgba(255,59,59,.45)}
     .btn-ghost{border:1px solid rgba(255,255,255,.6); color:#fff}
     .shadow-soft{box-shadow:0 10px 30px rgba(0,0,0,.08)}
-    .nav-blur{backdrop-filter: blur(12px); background:rgba(0, 34, 102, .5); border-bottom:1px solid rgba(255,255,255,.15)}
+    .nav-blur{backdrop-filter: blur(12px); background:rgba(0, 34, 102, .5); border-bottom:1px solid rgba(255,255,255,.15); padding-top: max(env(safe-area-inset-top), 0px);}  
     .ring-focus:focus{outline:3px solid rgba(0,102,255,.35); outline-offset:2px}
     .token-glow{filter: drop-shadow(0 0 24px rgba(0,102,255,.25))}
+
     .donut{
       --size: 240px;
       width: var(--size); height: var(--size);
@@ -44,46 +61,28 @@
       border-radius:50%;
       position:relative;
     }
+    /* Ensure donut inner circle sits behind */
     .donut::after{
-      content:"";
-      position:absolute; inset:12%;
-      background:#fff; border-radius:50%;
-      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06);
+      content:""; position:absolute; inset:12%; background:#fff; border-radius:50%;
+      box-shadow: inset 0 0 0 1px rgba(0,0,0,.06); z-index:0; pointer-events:none;
     }
-    .faq-q:hover{cursor:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"><text y="22" font-size="24">🐾</text></svg>') 16 16, pointer;}
-    html{scroll-behavior:smooth;}
-.chip-pos{ background: rgba(22,163,74,.15); color:#BBF7D0; border-color: rgba(34,197,94,.35); }
-.chip-neg{ background: rgba(239,68,68,.15); color:#FECACA; border-color: rgba(248,113,113,.35); }
-/* Ensure donut inner circle sits behind */
-.donut::after {
-  z-index: 0;
-  pointer-events: none;
-}
+    /* Center logo above and animate */
+    .donut > img { position: relative; z-index: 1; will-change: transform; object-fit: contain; }
 
-/* Center logo above and animate */
-.donut > img {
-  position: relative;
-  z-index: 1;
-  will-change: transform;
-  object-fit: contain;
-}
+    @keyframes spin-slow { from { transform: rotate(0deg);} to { transform: rotate(360deg);} }
+    .spin-slow { animation: spin-slow 12s linear infinite; }
 
-@keyframes spin-slow {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
+    .chip-pos{ background: rgba(22,163,74,.15); color:#BBF7D0; border-color: rgba(34,197,94,.35); }
+    .chip-neg{ background: rgba(239,68,68,.15); color:#FECACA; border-color: rgba(248,113,113,.35); }
 
-.spin-slow {
-  animation: spin-slow 12s linear infinite;
-}
+    /* Respect users who prefer less motion */
+    @media (prefers-reduced-motion: reduce){
+      .spin-slow { animation: none !important; }
+      #heroImg, #heroGrad { transform: none !important; }
+    }
 
-@media (prefers-reduced-motion: reduce){
-  .spin-slow { animation: none !important; }
-}
-
-@media (prefers-reduced-motion: reduce){
-  #heroImg, #heroGrad { transform: none !important; }
-}
+    /* Anchor offset for fixed header */
+    [id] { scroll-margin-top: 5rem; }
   </style>
 </head>
 <body class="bg-white text-slate-900 selection:bg-blue-600 selection:text-white">
@@ -92,7 +91,7 @@
     <nav class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex items-center justify-between h-16">
         <a href="#hero" class="flex items-center gap-3 group">
-          <img src="pibbclearbg.png" alt="$PIBBLE logo" class="h-9 w-9 token-glow" />
+          <img src="pibbclearbg.png" alt="$PIBBLE logo" class="h-9 w-9 token-glow" loading="eager" />
           <span class="text-white/90 group-hover:text-white font-semibold tracking-wide">PIBBLE</span>
         </a>
         <div class="hidden md:flex items-center gap-6 text-white/90">
@@ -112,44 +111,47 @@
     </nav>
   </header>
 
- <!-- HERO -->
-<section id="hero" class="relative pt-16 overflow-hidden bg-blue-800">
-  <img id="heroImg" src="pibbbanner.png" alt="Three adorable pibble pups"
-     class="w-full h-[62vh] md:h-[70vh] object-cover object-center will-change-transform origin-top" />
-  <!-- gradient is now bottom->top -->
-  <div id="heroGrad" class="absolute inset-[-1px] bg-gradient-to-t from-blue-700/70 via-blue-700/35 to-transparent will-change-transform"></div>
-  <div class="absolute inset-0 flex items-center">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl text-white">
-        <h1 class="text-4xl md:text-6xl font-extrabold drop-shadow-lg">PIBBLE is now officially live on Base!</h1>
-        <p class="mt-4 text-white/90 text-lg md:text-xl">Fair-launch, fixed 1,000,000,000 supply. 95% LP burned forever. No owner, no taxes, no blacklist. Just PIBBLE.</p>
+  <!-- HERO -->
+  <section id="hero" class="relative pt-16 overflow-hidden bg-blue-800">
+    <img id="heroImg" src="pibbbanner.png" alt="Three adorable pibble pups"
+         class="w-full object-cover object-center will-change-transform transform-gpu origin-top"
+         fetchpriority="high" decoding="async" style="height: var(--svh);" />
+    <!-- gradient (clamped to viewport to avoid iOS overflow) -->
+    <div id="heroGrad" class="absolute inset-0 bg-gradient-to-t from-blue-700/70 via-blue-700/35 to-transparent will-change-transform pointer-events-none"></div>
+    <div class="absolute inset-0 flex items-center">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl text-white">
+          <h1 class="text-4xl md:text-6xl font-extrabold drop-shadow-lg">PIBBLE is now officially live on Base!</h1>
+          <p class="mt-4 text-white/90 text-lg md:text-xl">Fair-launch, fixed 1,000,000,000 supply. 95% LP burned forever. No owner, no taxes, no blacklist. Just PIBBLE.</p>
 
-        <div class="mt-6 flex flex-wrap items-center gap-3">
-          <a href="https://app.uniswap.org/swap?outputCurrency=0xcd898058802f5235B8D2bf146f60936456E2C64a&chain=base" target="_blank" rel="noopener" class="btn btn-primary px-5 py-3 rounded-2xl text-base">Buy on Uniswap</a>
-          <a href="https://dexscreener.com/base/0x300bf29e913c738101f9ebcf39402651e85e1e3a" target="_blank" rel="noopener" class="btn btn-ghost px-5 py-3 rounded-2xl text-base">View Chart</a>
-          <button id="copyContractTop" class="btn btn-ghost px-5 py-3 rounded-2xl text-base">Copy Contract</button>
-          <span id="copiedToastTop" class="ml-2 text-sm text-white/80 hidden">✓ Copied</span>
+          <div class="mt-6 flex flex-wrap items-center gap-3">
+            <a href="https://app.uniswap.org/swap?outputCurrency=0xcd898058802f5235B8D2bf146f60936456E2C64a&chain=base" target="_blank" rel="noopener" class="btn btn-primary px-5 py-3 rounded-2xl text-base">Buy on Uniswap</a>
+            <a href="https://dexscreener.com/base/0x300bf29e913c738101f9ebcf39402651e85e1e3a" target="_blank" rel="noopener" class="btn btn-ghost px-5 py-3 rounded-2xl text-base">View Chart</a>
+            <button id="copyContractTop" class="btn btn-ghost px-5 py-3 rounded-2xl text-base">Copy Contract</button>
+            <span id="copiedToastTop" class="ml-2 text-sm text-white/80 hidden">✓ Copied</span>
+          </div>
+
+          <!-- Add-to-wallet buttons (wire up existing JS) -->
+          <div class="mt-3 flex flex-wrap gap-3">
+            <button id="addMetaMask" class="px-4 py-2 rounded-xl text-sm border border-white/25 text-white/90 hover:text-white">Add to MetaMask</button>
+            <button id="addCoinbase" class="px-4 py-2 rounded-xl text-sm border border-white/25 text-white/90 hover:text-white">Add to Coinbase Wallet</button>
+          </div>
+
+          <div class="mt-4 text-white/85 text-sm">
+            Contract: <code class="text-white">0xcd898058802f5235B8D2bf146f60936456E2C64a</code>
+          </div>
+
+          <!-- Live Price Row -->
+          <div id="priceRow" class="mt-2 text-white/90 text-sm flex flex-wrap items-center gap-2" aria-live="polite">
+            <span class="opacity-80">Live price:</span>
+            <span id="priceUsd" class="font-semibold tracking-wide">—</span>
+            <span id="priceChange" class="px-2 py-0.5 rounded-md text-xs border border-white/20">—</span>
+            <a href="https://dexscreener.com/base/0x300bf29e913c738101f9ebcf39402651e85e1e3a" class="underline text-white/90 hover:text-white ml-2" target="_blank" rel="noopener">View on Dexscreener</a>
+          </div>
         </div>
-
-        <div class="mt-4 text-white/85 text-sm">
-  Contract: <code class="text-white">0xcd898058802f5235B8D2bf146f60936456E2C64a</code>
-</div>
-
-<!-- Live Price Row -->
-<div id="priceRow" class="mt-2 text-white/90 text-sm flex flex-wrap items-center gap-2" aria-live="polite">
-  <span class="opacity-80">Live price:</span>
-  <span id="priceUsd" class="font-semibold tracking-wide">—</span>
-  <span id="priceChange" class="px-2 py-0.5 rounded-md text-xs border border-white/20">—</span>
-  <a
-    href="https://dexscreener.com/base/0x300bf29e913c738101f9ebcf39402651e85e1e3a"
-    class="underline text-white/90 hover:text-white ml-2"
-    target="_blank" rel="noopener"
-  >View on Dexscreener</a>
-</div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <!-- Socials -->
   <section id="socials" class="py-16">
@@ -165,7 +167,7 @@
           </div>
         </div>
         <div class="glass rounded-2xl p-6 text-center shadow-soft">
-          <img src="pibbclearbg.png" alt="PIBBLE token badge" class="mx-auto h-24 w-24 token-glow" />
+          <img src="pibbclearbg.png" alt="PIBBLE token badge" class="mx-auto h-24 w-24 token-glow" loading="lazy" decoding="async" />
           <p class="mt-4 text-slate-700">Fair-launch, fixed 1,000,000,000 supply. 95% LP burned forever. No owner, no taxes, no blacklist. Just PIBBLE.</p>
         </div>
       </div>
@@ -193,11 +195,13 @@
           </div>
           <div class="glass rounded-2xl p-5 shadow-soft">
             <h3 class="font-semibold">3. Open Uniswap or your wallet’s swap</h3>
-            <p class="text-slate-600 mt-1">Use our prefilled Uniswap link , the embedded tool to the right,<br>
+            <p class="text-slate-600 mt-1">Use our prefilled Uniswap link, the embedded tool to the right,<br>
             or<br>
             in your wallet’s swap screen paste the contract or search “Pibble”.<br>
             <em>Tip: Always double-check the contract address to avoid fakes.</em><br>
-            <button id="copyContractHow" class="mt-2 text-blue-700 underline">Copy 0xcd898058802f5235B8D2bf146f60936456E2C64a</button></p>
+            <button id="copyContractHow" class="mt-2 text-blue-700 underline">Copy 0xcd898058802f5235B8D2bf146f60936456E2C64a</button>
+            <span id="copiedToastMid" class="ml-2 text-sm text-slate-600 hidden">✓ Copied</span>
+            </p>
           </div>
           <div class="glass rounded-2xl p-5 shadow-soft">
             <h3 class="font-semibold">4. Swap ETH → PIBBLE</h3>
@@ -211,52 +215,47 @@
           </div>
         </div>
         <div class="glass rounded-2xl p-4 md:p-6 shadow-soft">
-  <h3 class="font-semibold text-slate-800 mb-3">Use our embedded Uniswap swap</h3>
-  <iframe
-    title="Uniswap Swap"
-    class="w-full h-[640px] rounded-xl border"
-    src="https://app.uniswap.org/swap?outputCurrency=0xcd898058802f5235B8D2bf146f60936456E2C64a&chain=base&use=V2"
-    loading="lazy"></iframe>
-  <p class="mt-3 text-sm text-slate-600">
-    If the tool is not working, 
-    <a href="https://app.uniswap.org/swap?outputCurrency=0xcd898058802f5235B8D2bf146f60936456E2C64a&chain=base"
-       target="_blank" rel="noopener"
-       class="text-blue-700 underline">use this link</a>.
-  </p>
-</div>
+          <h3 class="font-semibold text-slate-800 mb-3">Use our embedded Uniswap swap</h3>
+          <iframe
+            title="Uniswap Swap"
+            class="w-full sm:h-[640px] h-[520px] rounded-xl border"
+            src="https://app.uniswap.org/swap?outputCurrency=0xcd898058802f5235B8D2bf146f60936456E2C64a&chain=base&use=V2"
+            loading="lazy" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+          <p class="mt-3 text-sm text-slate-600">
+            If the tool is not working,
+            <a href="https://app.uniswap.org/swap?outputCurrency=0xcd898058802f5235B8D2bf146f60936456E2C64a&chain=base"
+               target="_blank" rel="noopener"
+               class="text-blue-700 underline">use this link</a>.
+          </p>
+        </div>
       </div>
     </div>
   </section>
 
-<!-- What is PIBBLE + Professor Washington -->
-<section class="py-20">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 items-center">
-    <div>
-      <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900">
-        What is pibble?
-      </h2>
-<p class="mt-4 text-slate-700">You know already know what a pibble is. If not, spend 10 minutes on TikTok or Instagram, then come back and buy.</p>
-      <p class="mt-4 text-slate-700">
-      <h3 class="mt-2 text-2xl md:text-3xl font-bold text-slate-900">
-        So what is Pibble Coin (PIBBLE)?
-      </h3>
-      <p class="mt-4 text-slate-700">
-        PIBBLE is a fair-launch meme token built for the Pibble Community, on Base (Ethereum L2, Chain ID 8453) for tiny fees and quick swaps.
-        Code is verified OpenZeppelin ERC-20 (Burnable, Permit). No owner/admin, no taxes, no blacklist/pause, fixed 1,000,000,000 supply.
-      </p>
-    </div>
-    <div class="glass rounded-2xl p-6 flex gap-5 items-center shadow-soft">
-      <img src="professorwashington.png" alt="Professor Washington" class="h-28 w-28 rounded-xl object-cover" />
+  <!-- What is PIBBLE + Professor Washington -->
+  <section class="py-20">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 items-center">
       <div>
-        <p class="text-slate-800">
-          <strong>Professor Washington here to explain:</strong>
-          “The contract has no tricks, no hidden fees, no control buttons. Once launched, no more PIBBLE can be created.
-          <a href="#faq" class="underline text-blue-700" rel="noopener">See FAQ for more</a>”
+        <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900">What is pibble?</h2>
+        <p class="mt-4 text-slate-700">You already know what a pibble is. If not, spend 10 minutes on TikTok or Instagram, then come back and buy.</p>
+        <h3 class="mt-6 text-2xl md:text-3xl font-bold text-slate-900">So what is Pibble Coin (PIBBLE)?</h3>
+        <p class="mt-4 text-slate-700">
+          PIBBLE is a fair-launch meme token built for the Pibble Community, on Base (Ethereum L2, Chain ID 8453) for tiny fees and quick swaps.
+          Code is verified OpenZeppelin ERC-20 (Burnable, Permit). No owner/admin, no taxes, no blacklist/pause, fixed 1,000,000,000 supply.
         </p>
       </div>
+      <div class="glass rounded-2xl p-6 flex gap-5 items-center shadow-soft">
+        <img src="professorwashington.png" alt="Professor Washington" class="h-28 w-28 rounded-xl object-cover" loading="lazy" decoding="async" />
+        <div>
+          <p class="text-slate-800">
+            <strong>Professor Washington here to explain:</strong>
+            “The contract has no tricks, no hidden fees, no control buttons. Once launched, no more PIBBLE can be created.
+            <a href="#faq" class="underline text-blue-700" rel="noopener">See FAQ for more</a>”
+          </p>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
   <!-- TRANSPARENCY & PROOFS -->
   <section id="transparency" class="py-20">
@@ -292,7 +291,7 @@
       </div>
 
       <div class="glass rounded-2xl p-6 mt-8 flex gap-5 items-start shadow-soft">
-        <img src="professorwashington.png" alt="Professor Washington" class="h-24 w-24 rounded-xl object-cover" />
+        <img src="professorwashington.png" alt="Professor Washington" class="h-24 w-24 rounded-xl object-cover" loading="lazy" decoding="async" />
         <p class="text-slate-800"><strong>Professor Washington here to explain: Why this is anti-rugpull</strong><br>
         "Rugpulls usually happen when a deployer controls liquidity or has special admin powers. With PIBBLE: (1) 95% of LP is burned so it cannot be removed; (2) the remaining 5% LP is held transparently in the treasury and used only to grow liquidity and listings; (3) the contract is a standard OpenZeppelin ERC-20 with no owner/admin, no taxes, no blacklist/pause, and no mint. Everything is verifiable on-chain via the links above."</p>
       </div>
@@ -303,9 +302,8 @@
   <section id="tokenomics" class="py-20 bg-slate-50">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-2 gap-10 items-center">
       <div class="donut mx-auto relative flex items-center justify-center">
-<img src="pibbclearbg.png" alt="PIBBLE token" 
-     class="h-24 w-24 token-glow rounded-full bg-white/90 p-2 shadow-md spin-slow" />
-</div>
+        <img src="pibbclearbg.png" alt="PIBBLE token" class="h-24 w-24 token-glow rounded-full bg-white/90 p-2 shadow-md spin-slow" loading="lazy" decoding="async" />
+      </div>
       <div>
         <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900">TOKENOMICS (Simple Breakdown)</h2>
         <ul class="mt-4 space-y-2 text-slate-700">
@@ -315,7 +313,7 @@
           <li>- 🔥 95% LP burned permanently</li>
         </ul>
         <div class="glass rounded-2xl p-5 mt-6 shadow-soft flex items-center gap-4">
-          <img src="professorwashington.png" alt="Professor Washington" class="h-16 w-16 rounded-lg object-cover" />
+          <img src="professorwashington.png" alt="Professor Washington" class="h-16 w-16 rounded-lg object-cover" loading="lazy" decoding="async" />
           <p class="text-slate-800"><strong>Professor Washington here to explain:</strong> “Think of it like a pibble’s food bowl: most treats are already in the market, a big bag is set aside to help PIBBLE grow into Pebble, and a small share goes to creators who keep the pibble famous.”</p>
         </div>
       </div>
@@ -330,52 +328,48 @@
         <details class="group p-5">
           <summary class="faq-q flex justify-between items-center cursor-pointer list-none">
             <span class="font-semibold text-slate-800">How does price work?</span>
-            <span class="transition group-open:rotate-45">＋</span>
+            <span aria-hidden="true" class="transition group-open:rotate-45">＋</span>
           </summary>
           <p class="mt-3 text-slate-700">PIBBLE trades on a decentralized exchange (Uniswap). There’s a liquidity pool containing PIBBLE and ETH. Prices move automatically based on buys/sells using a simple math rule (the constant product formula). When people buy, the pool gets more ETH and fewer PIBBLE, so the price rises; when people sell, the opposite happens. There’s no central company setting the price - it’s entirely market-driven.</p>
         </details>
         <details class="group p-5">
           <summary class="faq-q flex justify-between items-center cursor-pointer list-none">
             <span class="font-semibold text-slate-800">What is LP burning? What does our 95% burn mean?</span>
-            <span class="transition group-open:rotate-45">＋</span>
+            <span aria-hidden="true" class="transition group-open:rotate-45">＋</span>
           </summary>
           <p class="mt-3 text-slate-700">When liquidity is added, the pool issues LP tokens that represent ownership of that liquidity. Normally, whoever holds LP tokens could withdraw the liquidity later (which can cause rugpulls). Burning LP tokens means sending them to a dead address so they can never be used - the liquidity is effectively permanent. For PIBBLE, 95% of LP tokens are burned, so that portion of liquidity cannot be removed. The remaining 5% is kept in the public treasury to help with listings and to strengthen liquidity over time.</p>
         </details>
         <details class="group p-5">
           <summary class="faq-q flex justify-between items-center cursor-pointer list-none">
             <span class="font-semibold text-slate-800">Why Base (over Solana)?</span>
-            <span class="transition group-open:rotate-45">＋</span>
+            <span aria-hidden="true" class="transition group-open:rotate-45">＋</span>
           </summary>
           <p class="mt-3 text-slate-700">Base uses Ethereum’s wallet ecosystem - MetaMask and Coinbase Wallet just work. Fees are low and confirmations are fast, so first-time buyers aren’t scared off by costs. Coinbase is a major backer, which means smooth on-ramps and strong integrations. PIBBLE is a fair-launch community token - not another pump.fun-style rugpull.</p>
         </details>
         <details class="group p-5">
           <summary class="faq-q flex justify-between items-center cursor-pointer list-none">
             <span class="font-semibold text-slate-800">Is there an owner or taxes?</span>
-            <span class="transition group-open:rotate-45">＋</span>
+            <span aria-hidden="true" class="transition group-open:rotate-45">＋</span>
           </summary>
           <p class="mt-3 text-slate-700">Nope. No owner/admin. No hidden buy/sell taxes. No blacklist or pause. No minting after launch. PIBBLE is a pure ERC-20.</p>
         </details>
         <details class="group p-5">
           <summary class="faq-q flex justify-between items-center cursor-pointer list-none">
             <span class="font-semibold text-slate-800">Where can I verify everything?</span>
-            <span class="transition group-open:rotate-45">＋</span>
+            <span aria-hidden="true" class="transition group-open:rotate-45">＋</span>
           </summary>
           <p class="mt-3 text-slate-700">See the Transparency section for direct links to deployment, initial LP add, LP burn, the pair address, token page, and the treasury wallet - all on Basescan.</p>
         </details>
         <details class="group p-5">
-  <summary class="faq-q flex justify-between items-center cursor-pointer list-none">
-    <span class="font-semibold text-slate-800">Where can I wash my bellay?</span>
-    <span class="transition group-open:rotate-45">＋</span>
-  </summary>
-  <p class="mt-3 text-slate-700">
-    Right here 👉
-    <a
-      href="https://app.uniswap.org/swap?outputCurrency=0xcd898058802f5235B8D2bf146f60936456E2C64a&chain=base"
-      target="_blank" rel="noopener"
-      class="text-blue-700 underline"
-    >Buy PIBBLE</a>.
-  </p>
-</details>
+          <summary class="faq-q flex justify-between items-center cursor-pointer list-none">
+            <span class="font-semibold text-slate-800">Where can I wash my bellay?</span>
+            <span aria-hidden="true" class="transition group-open:rotate-45">＋</span>
+          </summary>
+          <p class="mt-3 text-slate-700">Right here 👉
+            <a href="https://app.uniswap.org/swap?outputCurrency=0xcd898058802f5235B8D2bf146f60936456E2C64a&chain=base"
+               target="_blank" rel="noopener" class="text-blue-700 underline">Buy PIBBLE</a>.
+          </p>
+        </details>
       </div>
     </div>
   </section>
@@ -405,7 +399,7 @@
   <footer class="py-10">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-5">
       <div class="flex items-center gap-3">
-        <img src="pibbclearbg.png" alt="PIBBLE token" class="h-8 w-8" />
+        <img src="pibbclearbg.png" alt="PIBBLE token" class="h-8 w-8" loading="lazy" decoding="async" />
         <p class="text-slate-600 text-sm">Disclaimer:<br>
         Nothing on this site is financial advice. Crypto is volatile and risky. Always verify the contract address and do your own research. PIBBLE is for the community - not financial advisors.</p>
       </div>
@@ -414,143 +408,145 @@
   </footer>
 
   <script>
-// Dexscreener pair for PIBBLE/ETH on Base
-const DEX_PAIR = "0x300bf29e913c738101f9ebcf39402651e85e1e3a";
-const DEX_URL  = `https://api.dexscreener.com/latest/dex/pairs/base/${DEX_PAIR}`;
+  // Dexscreener pair for PIBBLE/ETH on Base
+  const DEX_PAIR = "0x300bf29e913c738101f9ebcf39402651e85e1e3a";
+  const DEX_URL  = `https://api.dexscreener.com/latest/dex/pairs/base/${DEX_PAIR}`;
 
-    const CONTRACT = "0xcd898058802f5235B8D2bf146f60936456E2C64a";
-    const TOKEN = {
-      address: CONTRACT,
-      symbol: "PIBBLE",
-      decimals: 18,
-      image: location.origin + "/pibbclearbg.png"
-    };
+  const CONTRACT = "0xcd898058802f5235B8D2bf146f60936456E2C64a";
+  const TOKEN = {
+    address: CONTRACT,
+    symbol: "PIBBLE",
+    decimals: 18,
+    image: location.origin + "/pibbclearbg.png"
+  };
 
-    function copyContract(idToast){
-      navigator.clipboard.writeText(CONTRACT).then(()=>{
-        const t = document.getElementById(idToast);
-        if(t){ t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'), 1500); }
+  function copyContract(idToast){
+    navigator.clipboard.writeText(CONTRACT).then(()=>{
+      const t = document.getElementById(idToast);
+      if(t){ t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'), 1500); }
+    });
+  }
+
+  // Copy buttons
+  document.getElementById('copyContractTop')?.addEventListener('click', ()=>copyContract('copiedToastTop'));
+  document.getElementById('copyContractMid')?.addEventListener('click', ()=>copyContract('copiedToastMid'));
+  document.getElementById('copyContractHow')?.addEventListener('click', ()=>copyContract('copiedToastMid')); // reuse toast
+
+  // Add to wallet via EIP-747 (MetaMask & many wallets incl. Coinbase extension)
+  async function watchAsset(){
+    if(!window.ethereum){
+      alert("No Ethereum wallet found. Please install MetaMask or Coinbase Wallet.");
+      return;
+    }
+    try{
+      await window.ethereum.request({
+        method: 'wallet_watchAsset',
+        params: { type:'ERC20', options: TOKEN }
+      });
+    }catch(err){
+      console.error(err);
+      alert("Your wallet did not accept the request.");
+    }
+  }
+  document.getElementById('addMetaMask')?.addEventListener('click', watchAsset);
+  document.getElementById('addCoinbase')?.addEventListener('click', watchAsset);
+
+  // ===== Live Price (Dexscreener) =====
+  async function updateLivePrice(){
+    const priceEl  = document.getElementById('priceUsd');
+    const changeEl = document.getElementById('priceChange');
+    if(!priceEl || !changeEl) return;
+
+    try{
+      const res = await fetch(DEX_URL, { cache: 'no-store' });
+      if(!res.ok) throw new Error('HTTP ' + res.status);
+      const json = await res.json();
+
+      // Dexscreener structure: { pairs: [ { priceUsd, priceChange: { h24 }, ... } ] }
+      const pair = json?.pairs?.[0];
+      const priceUsd = pair?.priceUsd ? Number(pair.priceUsd) : null;
+      const chg24    = pair?.priceChange?.h24 != null ? Number(pair.priceChange.h24) : null;
+
+      // Price formatting
+      const fmt = (n)=>{
+        if(n == null || isNaN(n)) return '—';
+        if(n >= 1) return `$${n.toLocaleString(undefined,{ maximumFractionDigits: 4 })}`;
+        // sub-dollar tokens: show more precision but cap digits
+        return `$${n.toLocaleString(undefined,{ minimumFractionDigits: 5, maximumFractionDigits: 6 })}`;
+      };
+
+      priceEl.textContent = fmt(priceUsd);
+
+      // 24h change formatting + color
+      if(chg24 == null || isNaN(chg24)){
+        changeEl.textContent = '—';
+        changeEl.classList.remove('chip-pos','chip-neg');
+      } else {
+        const sign = chg24 >= 0 ? '+' : '';
+        changeEl.textContent = `${sign}${chg24.toFixed(2)}%`;
+        changeEl.classList.remove('chip-pos','chip-neg');
+        changeEl.classList.add(chg24 >= 0 ? 'chip-pos' : 'chip-neg');
+      }
+
+    }catch(err){
+      console.warn('Price fetch failed:', err);
+      // graceful fallback
+      const priceEl  = document.getElementById('priceUsd');
+      const changeEl = document.getElementById('priceChange');
+      if(priceEl)  priceEl.textContent  = '—';
+      if(changeEl){
+        changeEl.textContent = '—';
+        changeEl.classList.remove('chip-pos','chip-neg');
+      }
+    }
+  }
+
+  // Pause updates when backgrounded (battery-friendly)
+  let __pibblePaused = false;
+  document.addEventListener('visibilitychange', ()=>{ __pibblePaused = document.hidden; });
+
+  window.addEventListener('load', ()=>{
+    updateLivePrice();
+    setInterval(()=>{ if(!__pibblePaused) updateLivePrice(); }, 60_000);
+
+    if(window.gsap){
+      gsap.from("#hero h1",{y:20,opacity:0,duration:.6});
+      gsap.from("#hero p",{y:16,opacity:0,duration:.6,delay:.15});
+      gsap.utils.toArray("section").forEach((sec,i)=>{
+        if(i===0) return;
+        gsap.from(sec,{scrollTrigger:{trigger:sec,start:"top 80%"},y:24,opacity:0,duration:.5});
       });
     }
 
-    // Copy buttons
-    document.getElementById('copyContractTop')?.addEventListener('click', ()=>copyContract('copiedToastTop'));
-    document.getElementById('copyContractMid')?.addEventListener('click', ()=>copyContract('copiedToastMid'));
-    document.getElementById('copyContractHow')?.addEventListener('click', ()=>copyContract('copiedToastMid')); // reuse toast
+    if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      // Hero parallax image
+      gsap.to("#heroImg", {
+        y: 80,
+        scale: 1.12,
+        ease: "none",
+        force3D: true,
+        snap: { y: 1 },  // snap Y to whole pixels
+        scrollTrigger: {
+          trigger: "#hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: true
+        }
+      });
 
-    // Add to wallet via EIP-747 (MetaMask & many wallets incl. Coinbase extension)
-    async function watchAsset(){
-      if(!window.ethereum){
-        alert("No Ethereum wallet found. Please install MetaMask or Coinbase Wallet.");
-        return;
-      }
-      try{
-        await window.ethereum.request({
-          method: 'wallet_watchAsset',
-          params: { type:'ERC20', options: TOKEN }
-        });
-      }catch(err){
-        console.error(err);
-        alert("Your wallet did not accept the request.");
-      }
+      // Hero gradient opacity shift
+      gsap.to("#heroGrad", {
+        opacity: 0.85,
+        ease: "none",
+        scrollTrigger: {
+          trigger: "#hero",
+          start: "top top",
+          end: "bottom top",
+          scrub: true
+        }
+      });
     }
-    document.getElementById('addMetaMask')?.addEventListener('click', watchAsset);
-    document.getElementById('addCoinbase')?.addEventListener('click', watchAsset);
-
-    // Entrance animations
-    window.addEventListener('load', ()=>{
-// ===== Live Price (Dexscreener) =====
-async function updateLivePrice(){
-  const priceEl  = document.getElementById('priceUsd');
-  const changeEl = document.getElementById('priceChange');
-  if(!priceEl || !changeEl) return;
-
-  try{
-    const res = await fetch(DEX_URL, { cache: 'no-store' });
-    if(!res.ok) throw new Error('HTTP ' + res.status);
-    const json = await res.json();
-
-    // Dexscreener structure: { pairs: [ { priceUsd, priceChange: { h24 }, ... } ] }
-    const pair = json?.pairs?.[0];
-    const priceUsd = pair?.priceUsd ? Number(pair.priceUsd) : null;
-    const chg24    = pair?.priceChange?.h24 != null ? Number(pair.priceChange.h24) : null;
-
-    // Price formatting
-    const fmt = (n)=>{
-      if(n == null || isNaN(n)) return '—';
-      if(n >= 1) return `$${n.toLocaleString(undefined,{ maximumFractionDigits: 4 })}`;
-      // sub-dollar tokens: show more precision but cap digits
-      return `$${n.toLocaleString(undefined,{ minimumFractionDigits: 5, maximumFractionDigits: 6 })}`;
-    };
-
-    priceEl.textContent = fmt(priceUsd);
-
-    // 24h change formatting + color
-    if(chg24 == null || isNaN(chg24)){
-      changeEl.textContent = '—';
-      changeEl.classList.remove('chip-pos','chip-neg');
-    } else {
-      const sign = chg24 >= 0 ? '+' : '';
-      changeEl.textContent = `${sign}${chg24.toFixed(2)}%`;
-      changeEl.classList.remove('chip-pos','chip-neg');
-      changeEl.classList.add(chg24 >= 0 ? 'chip-pos' : 'chip-neg');
-    }
-
-  }catch(err){
-    console.warn('Price fetch failed:', err);
-    // graceful fallback
-    const priceEl  = document.getElementById('priceUsd');
-    const changeEl = document.getElementById('priceChange');
-    if(priceEl)  priceEl.textContent  = '—';
-    if(changeEl){
-      changeEl.textContent = '—';
-      changeEl.classList.remove('chip-pos','chip-neg');
-    }
-  }
-}
-
-// initial + interval refresh (every 60s)
-updateLivePrice();
-setInterval(updateLivePrice, 60_000);
-
-  if(window.gsap){
-    gsap.from("#hero h1",{y:20,opacity:0,duration:.6});
-    gsap.from("#hero p",{y:16,opacity:0,duration:.6,delay:.15});
-    gsap.utils.toArray("section").forEach((sec,i)=>{
-      if(i===0) return;
-      gsap.from(sec,{scrollTrigger:{trigger:sec,start:"top 80%"},y:24,opacity:0,duration:.5});
-    });
-  }
-
-  if (window.gsap && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    // Hero parallax image
-    gsap.to("#heroImg", {
-  y: 80,
-  scale: 1.12,
-  ease: "none",
-  force3D: true,
-  snap: { y: 1 },  // snap Y to whole pixels
-  scrollTrigger: {
-    trigger: "#hero",
-    start: "top top",
-    end: "bottom top",
-    scrub: true
-  }
-});
-
-    // Hero gradient opacity shift
-    gsap.to("#heroGrad", {
-      opacity: 0.85,
-      ease: "none",
-      scrollTrigger: {
-        trigger: "#hero",
-        start: "top top",
-        end: "bottom top",
-        scrub: true
-      }
-    });
-  }
-    });
+  });
   </script>
 </body>
 </html>
