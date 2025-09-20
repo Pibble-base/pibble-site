@@ -127,6 +127,31 @@
     #how .iframe-shell { width: 100% !important; max-width: 100% !important; border-radius: 12px; overflow: hidden; }
     #how iframe { display:block; width:100% !important; max-width:100% !important; height: min(75svh, 560px) !important; }
   }
+  /* --- iOS text zoom can cause 1–2px overflow; lock to 100% --- */
+  html { -webkit-text-size-adjust: 100%; }
+
+  /* --- HARDEN THE HOW-TO SECTION AGAINST ANY OVERFLOW --- */
+  #how, #how * { box-sizing: border-box; }
+  #how { overflow-x: hidden; contain: inline-size; }
+  #how .mx-auto { max-width: 100%; width: 100%; }
+  @supports (width: 100dvw){
+    #how .mx-auto { max-width: 100dvw; width: 100dvw; }
+  }
+  /* Force single column & prevent child intrinsic widths from pushing out */
+  #how .grid { grid-template-columns: 1fr !important; margin: 0 !important; }
+  #how .grid > * { min-width: 0; max-width: 100%; }
+
+  /* Make long URLs/addresses wrap instead of extending width */
+  #how .glass, #how .glass * { overflow-wrap: anywhere; word-break: break-word; }
+  #how code, #how a { word-break: break-all; }
+
+  /* Iframe shell & frame: never exceed viewport width */
+  #how .iframe-shell { width: 100%; max-width: 100%; overflow: hidden; border-radius: 12px; border: 1px solid rgba(0,0,0,.08); }
+  #how iframe { display:block; width:100% !important; max-width:100% !important; border:0; }
+  @media (max-width: 600px){
+    #how .mx-auto { padding-left: max(14px, env(safe-area-inset-left)); padding-right: max(14px, env(safe-area-inset-right)); }
+    #how iframe { height: min(78svh, 560px) !important; }
+  }
 </style>
 </head>
 <body class="bg-white text-slate-900 selection:bg-blue-600 selection:text-white">
