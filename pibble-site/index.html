@@ -115,6 +115,18 @@
     /* Ensure the embed is comfortably tall but not past viewport */
     #how iframe { height: min(72vh, 560px) !important; }
   }
+  /* iPhone 13 fix: ensure How-to section never exceeds viewport width */
+  #how { overflow-x: clip; }
+  @media (max-width: 600px){
+    /* Make the container truly edge-to-edge but safe-area aware */
+    #how .mx-auto { max-width: 100% !important; width: 100% !important; padding-left: max(16px, env(safe-area-inset-left)); padding-right: max(16px, env(safe-area-inset-right)); }
+    /* Strict single column to avoid row spill */
+    #how .grid { grid-template-columns: 1fr !important; margin: 0 !important; }
+    /* Cards & embeds must not add outer margins that cause overflow */
+    #how .glass { width: 100% !important; max-width: 100% !important; margin: 0 auto !important; overflow: visible; }
+    #how .iframe-shell { width: 100% !important; max-width: 100% !important; border-radius: 12px; overflow: hidden; }
+    #how iframe { display:block; width:100% !important; max-width:100% !important; height: min(75svh, 560px) !important; }
+  }
 </style>
 </head>
 <body class="bg-white text-slate-900 selection:bg-blue-600 selection:text-white">
