@@ -83,7 +83,26 @@
 
     /* Anchor offset for fixed header */
     [id] { scroll-margin-top: 5rem; }
-  </style>
+    /* Mobile fit safeguards: keep desktop sizes, scale to fit phones */
+  @media (max-width: 430px){
+    /* Ensure cards/widgets never extend past viewport on iPhone */
+    .glass{ margin-inline: max(12px, env(safe-area-inset-left)); border-radius: 16px; max-width: 100%; }
+    .glass > *{ max-width: 100%; }
+
+    /* Collapse complex grids to a single column if needed */
+    .grid{ grid-template-columns: 1fr !important; }
+    .row{ flex-wrap: wrap; }
+
+    /* Clamp embeds/widgets to the screen width & a sane height */
+    iframe, .widget, .widget-embed{ width: 100% !important; height: min(70vh, 560px) !important; }
+
+    /* Scale decorative visuals so they don’t clip */
+    .donut{ --size: min(78vw, 240px); }
+
+    /* Utility: if any element is still too wide, this forces containment */
+    .contain-mobile{ max-width: 100% !important; width: 100% !important; overflow: visible; }
+  }
+</style>
 </head>
 <body class="bg-white text-slate-900 selection:bg-blue-600 selection:text-white">
   <!-- Sticky Nav -->
